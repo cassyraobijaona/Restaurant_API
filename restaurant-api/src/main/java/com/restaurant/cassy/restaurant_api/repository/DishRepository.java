@@ -1,9 +1,9 @@
 package com.restaurant.cassy.restaurant_api.repository;
 
-import com.restaurant.cassy.restaurant_api.entity.Ingredient;
+import com.restaurant.cassy.restaurant_api.entity.Dish;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
+public interface DishRepository extends JpaRepository<Dish, Integer> {
 }

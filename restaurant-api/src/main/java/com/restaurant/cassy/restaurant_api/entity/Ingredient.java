@@ -1,24 +1,24 @@
 package com.restaurant.cassy.restaurant_api.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ingredient")
 public class Ingredient {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "name")
     private String name;
 
     @Column(name = "selling_price")
     private Double sellingPrice;
 
     @Column(name = "category")
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CategoryEnum category;
 
     @Column(name = "required_quantity")
     private Double requiredQuantity;
@@ -32,8 +32,8 @@ public class Ingredient {
     public Double getSellingPrice() { return sellingPrice; }
     public void setSellingPrice(Double sellingPrice) { this.sellingPrice = sellingPrice; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public CategoryEnum getCategory() { return category; }
+    public void setCategory(CategoryEnum category) { this.category = category; }
 
     public Double getRequiredQuantity() { return requiredQuantity; }
     public void setRequiredQuantity(Double requiredQuantity) { this.requiredQuantity = requiredQuantity; }
