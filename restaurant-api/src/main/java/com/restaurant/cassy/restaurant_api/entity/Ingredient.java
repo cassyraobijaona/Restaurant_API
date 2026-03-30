@@ -23,18 +23,43 @@ public class Ingredient {
     @Column(name = "required_quantity")
     private Double requiredQuantity;
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public Double getSellingPrice() { return sellingPrice; }
-    public void setSellingPrice(Double sellingPrice) { this.sellingPrice = sellingPrice; }
+    public String getName() {
+        return name;
+    }
 
-    public CategoryEnum getCategory() { return category; }
-    public void setCategory(CategoryEnum category) { this.category = category; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Double getRequiredQuantity() { return requiredQuantity; }
-    public void setRequiredQuantity(Double requiredQuantity) { this.requiredQuantity = requiredQuantity; }
+    public Double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public void setSellingPrice(Double sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public CategoryEnum getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEnum category) {
+        this.category = category;
+    }
+
+    public Double getRequiredQuantity() {
+        return requiredQuantity;
+    }
+
+    public void setRequiredQuantity(Double requiredQuantity) {
+        this.requiredQuantity = requiredQuantity;
+    }
 }

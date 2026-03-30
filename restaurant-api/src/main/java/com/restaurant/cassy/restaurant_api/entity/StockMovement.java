@@ -1,6 +1,7 @@
 package com.restaurant.cassy.restaurant_api.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,21 +28,51 @@ public class StockMovement {
     @Column(name = "movement_date")
     private LocalDateTime movementDate;
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public Integer getIngredientId() { return ingredientId; }
-    public void setIngredientId(Integer ingredientId) { this.ingredientId = ingredientId; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public Double getQuantity() { return quantity; }
-    public void setQuantity(Double quantity) { this.quantity = quantity; }
+    public Integer getIngredientId() {
+        return ingredientId;
+    }
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    public void setIngredientId(Integer ingredientId) {
+        this.ingredientId = ingredientId;
+    }
 
-    public MovementTypeEnum getMovementType() { return movementType; }
-    public void setMovementType(MovementTypeEnum movementType) { this.movementType = movementType; }
+    public Double getQuantity() {
+        return quantity;
+    }
 
-    public LocalDateTime getMovementDate() { return movementDate; }
-    public void setMovementDate(LocalDateTime movementDate) { this.movementDate = movementDate; }
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public MovementTypeEnum getMovementType() {
+        return movementType;
+    }
+
+    public void setMovementType(MovementTypeEnum movementType) {
+        this.movementType = movementType;
+    }
+
+    public LocalDateTime getMovementDate() {
+        return movementDate;
+    }
+
+    public void setMovementDate(LocalDateTime movementDate) {
+        this.movementDate = movementDate;
+    }
 }

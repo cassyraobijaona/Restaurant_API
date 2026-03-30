@@ -16,14 +16,14 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Integer>
     List<Ingredient> findAllPaginated(Pageable pageable);
 
     @Query(value = """
-        SELECT DISTINCT i.* FROM ingredient i
-        LEFT JOIN dish_ingredient di ON di.ingredient_id = i.id
-        LEFT JOIN dish d ON d.id = di.dish_id
-        WHERE (:name IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :name, '%')))
-        AND (:category IS NULL OR i.category = CAST(:category AS VARCHAR))
-        AND (:dishName IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :dishName, '%')))
-        LIMIT :size OFFSET :offset
-        """, nativeQuery = true)
+            SELECT DISTINCT i.* FROM ingredient i
+            LEFT JOIN dish_ingredient di ON di.ingredient_id = i.id
+            LEFT JOIN dish d ON d.id = di.dish_id
+            WHERE (:name IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :name, '%')))
+            AND (:category IS NULL OR i.category = CAST(:category AS VARCHAR))
+            AND (:dishName IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :dishName, '%')))
+            LIMIT :size OFFSET :offset
+            """, nativeQuery = true)
     List<Ingredient> findByCriteria(
             @Param("name") String name,
             @Param("category") String category,

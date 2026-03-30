@@ -10,6 +10,11 @@ public class CostResponseDto {
         this.cost = cost;
     }
 
-    public String getDishName() { return dishName; }
-    public Double getCost() { return cost; }
+    public String getDishName() {
+        return dishName;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
 }

@@ -16,8 +16,19 @@ public class IngredientResponseDto {
         this.price = price;
     }
 
-    public Integer getId() { return id; }
-    public String getName() { return name; }
-    public CategoryEnum getCategory() { return category; }
-    public Double getPrice() { return price; }
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public CategoryEnum getCategory() {
+        return category;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
 }

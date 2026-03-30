@@ -24,18 +24,43 @@ public class DishIngredient {
     @Column(name = "unit")
     private String unit;
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public Dish getDish() { return dish; }
-    public void setDish(Dish dish) { this.dish = dish; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public Ingredient getIngredient() { return ingredient; }
-    public void setIngredient(Ingredient ingredient) { this.ingredient = ingredient; }
+    public Dish getDish() {
+        return dish;
+    }
 
-    public Double getRequiredQuantity() { return requiredQuantity; }
-    public void setRequiredQuantity(Double requiredQuantity) { this.requiredQuantity = requiredQuantity; }
+    public void setDish(Dish dish) {
+        this.dish = dish;
+    }
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public Double getRequiredQuantity() {
+        return requiredQuantity;
+    }
+
+    public void setRequiredQuantity(Double requiredQuantity) {
+        this.requiredQuantity = requiredQuantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 }

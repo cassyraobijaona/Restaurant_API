@@ -10,6 +10,11 @@ public class StockResponseDto {
         this.value = value;
     }
 
-    public String getUnit() { return unit; }
-    public Double getValue() { return value; }
+    public String getUnit() {
+        return unit;
+    }
+
+    public Double getValue() {
+        return value;
+    }
 }

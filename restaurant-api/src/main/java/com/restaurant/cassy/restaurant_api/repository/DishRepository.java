@@ -12,10 +12,10 @@ import java.util.List;
 public interface DishRepository extends JpaRepository<Dish, Integer> {
 
     @Query(value = """
-        SELECT DISTINCT d.* FROM dish d
-        JOIN dish_ingredient di ON di.dish_id = d.id
-        JOIN ingredient i ON i.id = di.ingredient_id
-        WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :ingredientName, '%'))
-        """, nativeQuery = true)
+            SELECT DISTINCT d.* FROM dish d
+            JOIN dish_ingredient di ON di.dish_id = d.id
+            JOIN ingredient i ON i.id = di.ingredient_id
+            WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :ingredientName, '%'))
+            """, nativeQuery = true)
     List<Dish> findByIngredientName(@Param("ingredientName") String ingredientName);
 }

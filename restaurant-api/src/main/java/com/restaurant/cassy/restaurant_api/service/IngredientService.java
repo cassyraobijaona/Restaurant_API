@@ -1,7 +1,6 @@
 package com.restaurant.cassy.restaurant_api.service;
 
 import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
-import com.restaurant.cassy.restaurant_api.entity.CategoryEnum;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.entity.StockMovement;
 import com.restaurant.cassy.restaurant_api.repository.IngredientRepository;

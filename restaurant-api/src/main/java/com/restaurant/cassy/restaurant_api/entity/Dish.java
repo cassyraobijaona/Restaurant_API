@@ -49,18 +49,43 @@ public class Dish {
         return sellingPrice - getDishCost();
     }
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public DishTypeEnum getDishType() { return dishType; }
-    public void setDishType(DishTypeEnum dishType) { this.dishType = dishType; }
+    public String getName() {
+        return name;
+    }
 
-    public Double getSellingPrice() { return sellingPrice; }
-    public void setSellingPrice(Double sellingPrice) { this.sellingPrice = sellingPrice; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public List<Ingredient> getIngredients() { return ingredients; }
-    public void setIngredients(List<Ingredient> ingredients) { this.ingredients = ingredients; }
+    public DishTypeEnum getDishType() {
+        return dishType;
+    }
+
+    public void setDishType(DishTypeEnum dishType) {
+        this.dishType = dishType;
+    }
+
+    public Double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public void setSellingPrice(Double sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }

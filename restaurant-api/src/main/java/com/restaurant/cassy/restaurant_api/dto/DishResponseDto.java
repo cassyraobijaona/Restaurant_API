@@ -1,6 +1,5 @@
 package com.restaurant.cassy.restaurant_api.dto;
 
-import com.restaurant.cassy.restaurant_api.entity.DishTypeEnum;
 import java.util.List;
 
 public class DishResponseDto {
@@ -18,8 +17,19 @@ public class DishResponseDto {
         this.ingredients = ingredients;
     }
 
-    public Integer getId() { return id; }
-    public String getName() { return name; }
-    public Double getSellingPrice() { return sellingPrice; }
-    public List<IngredientResponseDto> getIngredients() { return ingredients; }
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public List<IngredientResponseDto> getIngredients() {
+        return ingredients;
+    }
 }

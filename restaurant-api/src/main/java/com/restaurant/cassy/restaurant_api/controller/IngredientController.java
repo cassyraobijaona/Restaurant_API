@@ -2,7 +2,6 @@ package com.restaurant.cassy.restaurant_api.controller;
 
 import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
 import com.restaurant.cassy.restaurant_api.dto.StockResponseDto;
-import com.restaurant.cassy.restaurant_api.entity.CategoryEnum;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.service.IngredientService;
 import org.springframework.http.ResponseEntity;

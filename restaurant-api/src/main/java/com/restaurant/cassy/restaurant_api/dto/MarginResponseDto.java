@@ -15,8 +15,19 @@ public class MarginResponseDto {
         this.grossMargin = grossMargin;
     }
 
-    public String getDishName() { return dishName; }
-    public Double getSellingPrice() { return sellingPrice; }
-    public Double getCost() { return cost; }
-    public Double getGrossMargin() { return grossMargin; }
+    public String getDishName() {
+        return dishName;
+    }
+
+    public Double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public Double getGrossMargin() {
+        return grossMargin;
+    }
 }
