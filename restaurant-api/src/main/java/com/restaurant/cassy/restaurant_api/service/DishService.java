@@ -1,7 +1,9 @@
 package com.restaurant.cassy.restaurant_api.service;
 
+import com.restaurant.cassy.restaurant_api.dto.CostResponseDto;
 import com.restaurant.cassy.restaurant_api.dto.DishResponseDto;
 import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
+import com.restaurant.cassy.restaurant_api.dto.MarginResponseDto;
 import com.restaurant.cassy.restaurant_api.entity.Dish;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.repository.DishRepository;
@@ -105,5 +107,30 @@ public class DishService {
                 .stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    public CostResponseDto getDishCost(Integer id) {
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("NOT_FOUND"));
+        return new CostResponseDto(dish.getName(), dish.getDishCost());
+    }
+
+    public MarginResponseDto getGrossMargin(Integer id) {
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("NOT_FOUND"));
+        try {
+            Double margin = dish.getGrossMargin();
+            return new MarginResponseDto(
+                    dish.getName(),
+                    dish.getSellingPrice(),
+                    dish.getDishCost(),
+                    margin
+            );
+        } catch (RuntimeException e) {
+            if ("SELLING_PRICE_NULL".equals(e.getMessage())) {
+                throw new RuntimeException("SELLING_PRICE_NULL");
+            }
+            throw e;
+        }
     }
 }

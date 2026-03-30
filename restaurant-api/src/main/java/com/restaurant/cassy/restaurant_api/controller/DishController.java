@@ -60,6 +60,36 @@ public class DishController {
         }
     }
 
+    @GetMapping("/{id}/cost")
+    public ResponseEntity<?> getDishCost(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(dishService.getDishCost(id));
+        } catch (RuntimeException e) {
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found");
+            }
+            throw e;
+        }
+    }
+
+    @GetMapping("/{id}/margin")
+    public ResponseEntity<?> getGrossMargin(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(dishService.getGrossMargin(id));
+        } catch (RuntimeException e) {
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found");
+            }
+            if ("SELLING_PRICE_NULL".equals(e.getMessage())) {
+                return ResponseEntity.status(400)
+                        .body("Cannot compute gross margin: selling price is null for this dish.");
+            }
+            throw e;
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> saveDish(
             @RequestBody(required = false) Dish dish) {

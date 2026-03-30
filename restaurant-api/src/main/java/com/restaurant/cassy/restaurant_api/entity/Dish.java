@@ -31,6 +31,24 @@ public class Dish {
     )
     private List<Ingredient> ingredients = new ArrayList<>();
 
+    public Double getDishCost() {
+        if (ingredients == null || ingredients.isEmpty()) return 0.0;
+        return ingredients.stream()
+                .mapToDouble(i -> {
+                    double price = i.getSellingPrice() != null ? i.getSellingPrice() : 0.0;
+                    double qty = i.getRequiredQuantity() != null ? i.getRequiredQuantity() : 1.0;
+                    return price * qty;
+                })
+                .sum();
+    }
+
+    public Double getGrossMargin() {
+        if (sellingPrice == null) {
+            throw new RuntimeException("SELLING_PRICE_NULL");
+        }
+        return sellingPrice - getDishCost();
+    }
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
