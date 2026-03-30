@@ -103,4 +103,26 @@ public class IngredientController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateIngredient(
+            @PathVariable Integer id,
+            @RequestBody(required = false) Ingredient ingredient) {
+
+        if (ingredient == null) {
+            return ResponseEntity.status(400)
+                    .body("Request body is required.");
+        }
+
+        try {
+            IngredientResponseDto updated = ingredientService.saveIngredient(id, ingredient);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Ingredient.id=" + id + " is not found");
+            }
+            throw e;
+        }
+    }
 }

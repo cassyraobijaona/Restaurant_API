@@ -93,4 +93,16 @@ public class IngredientService {
                 i.getSellingPrice()
         );
     }
+
+    public IngredientResponseDto saveIngredient(Integer id, Ingredient toSave) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("NOT_FOUND"));
+
+        if (toSave.getName() != null) ingredient.setName(toSave.getName());
+        if (toSave.getSellingPrice() != null) ingredient.setSellingPrice(toSave.getSellingPrice());
+        if (toSave.getCategory() != null) ingredient.setCategory(toSave.getCategory());
+        if (toSave.getRequiredQuantity() != null) ingredient.setRequiredQuantity(toSave.getRequiredQuantity());
+
+        return toDto(ingredientRepository.save(ingredient));
+    }
 }
