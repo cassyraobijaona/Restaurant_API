@@ -6,6 +6,7 @@ import com.restaurant.cassy.restaurant_api.entity.Dish;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.repository.DishRepository;
 import com.restaurant.cassy.restaurant_api.repository.IngredientRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,8 +51,9 @@ public class DishService {
     }
 
     private DishResponseDto toDto(Dish dish) {
-        List<IngredientResponseDto> ingredientDtos = dish.getIngredients()
-                .stream()
+        List<IngredientResponseDto> ingredientDtos = dish.getIngredients() == null
+                ? List.of()
+                : dish.getIngredients().stream()
                 .map(i -> new IngredientResponseDto(
                         i.getId(),
                         i.getName(),
@@ -66,5 +68,35 @@ public class DishService {
                 dish.getSellingPrice(),
                 ingredientDtos
         );
+    }
+
+    @Transactional
+    public DishResponseDto saveDish(Dish dishToSave) {
+        Dish dish;
+
+        if (dishToSave.getId() != null) {
+            dish = dishRepository.findById(dishToSave.getId())
+                    .orElseThrow(() -> new RuntimeException("NOT_FOUND"));
+            dish.setName(dishToSave.getName());
+            dish.setDishType(dishToSave.getDishType());
+            dish.setSellingPrice(dishToSave.getSellingPrice());
+        } else {
+            dish = new Dish();
+            dish.setName(dishToSave.getName());
+            dish.setDishType(dishToSave.getDishType());
+            dish.setSellingPrice(dishToSave.getSellingPrice());
+        }
+
+        if (dishToSave.getIngredients() != null) {
+            List<Integer> ids = dishToSave.getIngredients()
+                    .stream()
+                    .map(Ingredient::getId)
+                    .filter(id -> id != null)
+                    .toList();
+            List<Ingredient> validIngredients = ingredientRepository.findAllById(ids);
+            dish.setIngredients(validIngredients);
+        }
+
+        return toDto(dishRepository.save(dish));
     }
 }
