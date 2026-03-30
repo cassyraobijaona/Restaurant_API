@@ -1,6 +1,7 @@
 package com.restaurant.cassy.restaurant_api.controller;
 
-import com.restaurant.cassy.restaurant_api.entity.Ingredient;
+import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
+import com.restaurant.cassy.restaurant_api.dto.StockResponseDto;
 import com.restaurant.cassy.restaurant_api.service.IngredientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,13 +22,13 @@ public class IngredientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Ingredient>> getAll() {
+    public ResponseEntity<List<IngredientResponseDto>> getAll() {
         return ResponseEntity.ok(ingredientService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Integer id) {
-        Optional<Ingredient> ingredient = ingredientService.findById(id);
+        Optional<IngredientResponseDto> ingredient = ingredientService.findById(id);
         if (ingredient.isEmpty()) {
             return ResponseEntity.status(404)
                     .body("Ingredient.id=" + id + " is not found");
@@ -47,8 +47,7 @@ public class IngredientController {
                     .body("Either mandatory query parameter `at` or `unit` is not provided.");
         }
 
-        Optional<Ingredient> ingredient = ingredientService.findById(id);
-        if (ingredient.isEmpty()) {
+        if (!ingredientService.existsById(id)) {
             return ResponseEntity.status(404)
                     .body("Ingredient.id=" + id + " is not found");
         }
@@ -63,9 +62,6 @@ public class IngredientController {
 
         double stockValue = ingredientService.getStockValueAt(id, dateTime);
 
-        return ResponseEntity.ok(Map.of(
-                "unit", unit,
-                "value", stockValue
-        ));
+        return ResponseEntity.ok(new StockResponseDto(unit, stockValue));
     }
 }

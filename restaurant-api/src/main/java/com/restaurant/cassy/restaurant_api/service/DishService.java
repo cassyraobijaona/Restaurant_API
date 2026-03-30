@@ -1,5 +1,7 @@
 package com.restaurant.cassy.restaurant_api.service;
 
+import com.restaurant.cassy.restaurant_api.dto.DishResponseDto;
+import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
 import com.restaurant.cassy.restaurant_api.entity.Dish;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.repository.DishRepository;
@@ -21,15 +23,19 @@ public class DishService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public List<Dish> findAll() {
-        return dishRepository.findAll();
+    public List<DishResponseDto> findAll() {
+        return dishRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Optional<Dish> findById(Integer id) {
-        return dishRepository.findById(id);
+    public Optional<DishResponseDto> findById(Integer id) {
+        return dishRepository.findById(id)
+                .map(this::toDto);
     }
 
-    public Dish updateIngredients(Integer dishId, List<Ingredient> requested) {
+    public DishResponseDto updateIngredients(Integer dishId, List<Ingredient> requested) {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new RuntimeException("NOT_FOUND"));
 
@@ -40,6 +46,25 @@ public class DishService {
         List<Ingredient> validIngredients = ingredientRepository.findAllById(ids);
         dish.setIngredients(validIngredients);
 
-        return dishRepository.save(dish);
+        return toDto(dishRepository.save(dish));
+    }
+
+    private DishResponseDto toDto(Dish dish) {
+        List<IngredientResponseDto> ingredientDtos = dish.getIngredients()
+                .stream()
+                .map(i -> new IngredientResponseDto(
+                        i.getId(),
+                        i.getName(),
+                        i.getCategory(),
+                        i.getSellingPrice()
+                ))
+                .toList();
+
+        return new DishResponseDto(
+                dish.getId(),
+                dish.getName(),
+                dish.getSellingPrice(),
+                ingredientDtos
+        );
     }
 }

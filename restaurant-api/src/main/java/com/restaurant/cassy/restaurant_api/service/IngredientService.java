@@ -1,5 +1,6 @@
 package com.restaurant.cassy.restaurant_api.service;
 
+import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.entity.StockMovement;
 import com.restaurant.cassy.restaurant_api.repository.IngredientRepository;
@@ -22,12 +23,20 @@ public class IngredientService {
         this.stockMovementRepository = stockMovementRepository;
     }
 
-    public List<Ingredient> findAll() {
-        return ingredientRepository.findAll();
+    public List<IngredientResponseDto> findAll() {
+        return ingredientRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Optional<Ingredient> findById(Integer id) {
-        return ingredientRepository.findById(id);
+    public Optional<IngredientResponseDto> findById(Integer id) {
+        return ingredientRepository.findById(id)
+                .map(this::toDto);
+    }
+
+    public boolean existsById(Integer id) {
+        return ingredientRepository.existsById(id);
     }
 
     public double getStockValueAt(Integer ingredientId, LocalDateTime at) {
@@ -37,5 +46,14 @@ public class IngredientService {
         return movements.stream()
                 .mapToDouble(StockMovement::getQuantity)
                 .sum();
+    }
+
+    private IngredientResponseDto toDto(Ingredient i) {
+        return new IngredientResponseDto(
+                i.getId(),
+                i.getName(),
+                i.getCategory(),
+                i.getSellingPrice()
+        );
     }
 }

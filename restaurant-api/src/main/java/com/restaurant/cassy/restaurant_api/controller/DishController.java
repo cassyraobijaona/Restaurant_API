@@ -1,6 +1,6 @@
 package com.restaurant.cassy.restaurant_api.controller;
 
-import com.restaurant.cassy.restaurant_api.entity.Dish;
+import com.restaurant.cassy.restaurant_api.dto.DishResponseDto;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.service.DishService;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class DishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Dish>> getAll() {
+    public ResponseEntity<List<DishResponseDto>> getAll() {
         return ResponseEntity.ok(dishService.findAll());
     }
 
@@ -34,7 +34,7 @@ public class DishController {
         }
 
         try {
-            Dish updated = dishService.updateIngredients(id, ingredients);
+            DishResponseDto updated = dishService.updateIngredients(id, ingredients);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             if ("NOT_FOUND".equals(e.getMessage())) {
