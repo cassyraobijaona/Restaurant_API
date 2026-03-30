@@ -2,6 +2,8 @@ package com.restaurant.cassy.restaurant_api.controller;
 
 import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
 import com.restaurant.cassy.restaurant_api.dto.StockResponseDto;
+import com.restaurant.cassy.restaurant_api.entity.CategoryEnum;
+import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.service.IngredientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +24,28 @@ public class IngredientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IngredientResponseDto>> getAll() {
-        return ResponseEntity.ok(ingredientService.findAll());
+    public ResponseEntity<List<IngredientResponseDto>> getAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String dishName,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+
+        if (name == null && category == null && dishName == null
+                && page == null && size == null) {
+            return ResponseEntity.ok(ingredientService.findAll());
+        }
+
+        int p = (page != null) ? page : 1;
+        int s = (size != null) ? size : 10;
+
+        if (name == null && category == null && dishName == null) {
+            return ResponseEntity.ok(ingredientService.findAllPaginated(p, s));
+        }
+
+        return ResponseEntity.ok(
+                ingredientService.findByCriteria(name, category, dishName, p, s)
+        );
     }
 
     @GetMapping("/{id}")
@@ -57,11 +79,28 @@ public class IngredientController {
             dateTime = LocalDateTime.parse(at);
         } catch (DateTimeParseException e) {
             return ResponseEntity.status(400)
-                    .body("Invalid date format for `at`. Expected format: yyyy-MM-ddTHH:mm:ss");
+                    .body("Invalid date format for `at`. Expected: yyyy-MM-ddTHH:mm:ss");
         }
 
         double stockValue = ingredientService.getStockValueAt(id, dateTime);
-
         return ResponseEntity.ok(new StockResponseDto(unit, stockValue));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createIngredients(
+            @RequestBody(required = false) List<Ingredient> ingredients) {
+
+        if (ingredients == null || ingredients.isEmpty()) {
+            return ResponseEntity.status(400)
+                    .body("Request body is required and must contain a list of ingredients.");
+        }
+
+        try {
+            List<IngredientResponseDto> created =
+                    ingredientService.createIngredients(ingredients);
+            return ResponseEntity.status(201).body(created);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 }

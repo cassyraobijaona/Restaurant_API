@@ -23,6 +23,14 @@ public class DishController {
         return ResponseEntity.ok(dishService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        return dishService.findById(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found"));
+    }
+
     @PutMapping("/{id}/ingredients")
     public ResponseEntity<?> updateIngredients(
             @PathVariable Integer id,

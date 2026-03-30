@@ -1,10 +1,13 @@
 package com.restaurant.cassy.restaurant_api.service;
 
 import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
+import com.restaurant.cassy.restaurant_api.entity.CategoryEnum;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.entity.StockMovement;
 import com.restaurant.cassy.restaurant_api.repository.IngredientRepository;
 import com.restaurant.cassy.restaurant_api.repository.StockMovementRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,19 +33,53 @@ public class IngredientService {
                 .toList();
     }
 
+    public List<IngredientResponseDto> findByCriteria(
+            String name, String category, String dishName,
+            int page, int size) {
+
+        int offset = (page - 1) * size;
+        return ingredientRepository.findByCriteria(name, category, dishName, size, offset)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    public List<IngredientResponseDto> findAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ingredientRepository.findAllPaginated(pageable)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
     public Optional<IngredientResponseDto> findById(Integer id) {
-        return ingredientRepository.findById(id)
-                .map(this::toDto);
+        return ingredientRepository.findById(id).map(this::toDto);
     }
 
     public boolean existsById(Integer id) {
         return ingredientRepository.existsById(id);
     }
 
+    public List<IngredientResponseDto> createIngredients(List<Ingredient> newIngredients) {
+        for (Ingredient ingredient : newIngredients) {
+            boolean exists = ingredientRepository.findAll()
+                    .stream()
+                    .anyMatch(i -> i.getName().equalsIgnoreCase(ingredient.getName()));
+            if (exists) {
+                throw new RuntimeException(
+                        "Ingredient '" + ingredient.getName() + "' already exists"
+                );
+            }
+        }
+        return ingredientRepository.saveAll(newIngredients)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
     public double getStockValueAt(Integer ingredientId, LocalDateTime at) {
         List<StockMovement> movements = stockMovementRepository
                 .findByIngredientIdAndMovementDateLessThanEqual(ingredientId, at);
-
         return movements.stream()
                 .mapToDouble(StockMovement::getQuantity)
                 .sum();
