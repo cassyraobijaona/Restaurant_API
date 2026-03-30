@@ -99,4 +99,11 @@ public class DishService {
 
         return toDto(dishRepository.save(dish));
     }
+
+    public List<DishResponseDto> findByIngredientName(String ingredientName) {
+        return dishRepository.findByIngredientName(ingredientName)
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
 }

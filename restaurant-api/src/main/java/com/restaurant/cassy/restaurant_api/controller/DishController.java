@@ -20,7 +20,13 @@ public class DishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DishResponseDto>> getAll() {
+    public ResponseEntity<List<DishResponseDto>> getAll(
+            @RequestParam(required = false) String ingredientName) {
+
+        if (ingredientName != null) {
+            return ResponseEntity.ok(dishService.findByIngredientName(ingredientName));
+        }
+
         return ResponseEntity.ok(dishService.findAll());
     }
 
