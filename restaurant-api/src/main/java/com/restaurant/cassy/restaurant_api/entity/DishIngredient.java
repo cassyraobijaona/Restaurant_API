@@ -1,27 +1,11 @@
 package com.restaurant.cassy.restaurant_api.entity;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "dish_ingredient")
 public class DishIngredient {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "dish_id")
-    private Dish dish;
-
-    @ManyToOne
-    @JoinColumn(name = "ingredient_id")
-    private Ingredient ingredient;
-
-    @Column(name = "required_quantity")
+    private Integer dishId;        // ⚠️ plus d'objet Dish
+    private Integer ingredientId;  // ⚠️ plus d'objet Ingredient
     private Double requiredQuantity;
-
-    @Column(name = "unit")
     private String unit;
 
     public Integer getId() {
@@ -32,20 +16,20 @@ public class DishIngredient {
         this.id = id;
     }
 
-    public Dish getDish() {
-        return dish;
+    public Integer getDishId() {
+        return dishId;
     }
 
-    public void setDish(Dish dish) {
-        this.dish = dish;
+    public void setDishId(Integer dishId) {
+        this.dishId = dishId;
     }
 
-    public Ingredient getIngredient() {
-        return ingredient;
+    public Integer getIngredientId() {
+        return ingredientId;
     }
 
-    public void setIngredient(Ingredient ingredient) {
-        this.ingredient = ingredient;
+    public void setIngredientId(Integer ingredientId) {
+        this.ingredientId = ingredientId;
     }
 
     public Double getRequiredQuantity() {

@@ -1,38 +1,19 @@
 package com.restaurant.cassy.restaurant_api.entity;
 
-import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "dish")
 public class Dish {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "dish_type")
-    @Enumerated(EnumType.STRING)
     private DishTypeEnum dishType;
-
-    @Column(name = "selling_price")
     private Double sellingPrice;
-
-    @ManyToMany
-    @JoinTable(
-            name = "dish_ingredient",
-            joinColumns = @JoinColumn(name = "dish_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Double getDishCost() {
         if (ingredients == null || ingredients.isEmpty()) return 0.0;
+
         return ingredients.stream()
                 .mapToDouble(i -> {
                     double price = i.getSellingPrice() != null ? i.getSellingPrice() : 0.0;

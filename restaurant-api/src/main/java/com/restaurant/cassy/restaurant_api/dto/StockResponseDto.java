@@ -5,7 +5,7 @@ public class StockResponseDto {
     private String unit;
     private Double value;
 
-    public StockResponseDto(String unit, Double value) {
+    public StockResponseDto(Integer id, String unit, Double value) {
         this.unit = unit;
         this.value = value;
     }

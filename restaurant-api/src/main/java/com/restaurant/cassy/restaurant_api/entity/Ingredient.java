@@ -1,26 +1,20 @@
 package com.restaurant.cassy.restaurant_api.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
-@Table(name = "ingredient")
+@Table("ingredient")
 public class Ingredient {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "selling_price")
     private Double sellingPrice;
 
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
     private CategoryEnum category;
 
-    @Column(name = "required_quantity")
     private Double requiredQuantity;
 
     public Integer getId() {
