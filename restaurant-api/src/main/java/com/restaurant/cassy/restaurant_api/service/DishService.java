@@ -1,15 +1,13 @@
 package com.restaurant.cassy.restaurant_api.service;
 
-import com.restaurant.cassy.restaurant_api.dto.CostResponseDto;
-import com.restaurant.cassy.restaurant_api.dto.DishResponseDto;
-import com.restaurant.cassy.restaurant_api.dto.IngredientResponseDto;
-import com.restaurant.cassy.restaurant_api.dto.MarginResponseDto;
+import com.restaurant.cassy.restaurant_api.dto.*;
 import com.restaurant.cassy.restaurant_api.entity.Dish;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.repository.DishRepository;
 import com.restaurant.cassy.restaurant_api.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,5 +127,30 @@ public class DishService {
                 dish.getSellingPrice(),
                 ingredientDtos
         );
+    }
+
+    public List<DishResponseDto> createDishes(List<CreateDishRequestDto> requests) {
+        for (CreateDishRequestDto req : requests) {
+            if (dishRepository.existsByName(req.getName())) {
+                throw new RuntimeException("DISH_EXISTS:" + req.getName());
+            }
+        }
+
+        List<DishResponseDto> created = new ArrayList<>();
+        for (CreateDishRequestDto req : requests) {
+            Dish dish = new Dish();
+            dish.setName(req.getName());
+            dish.setDishType(req.getDishType());
+            dish.setSellingPrice(req.getSellingPrice());
+            created.add(toDto(dishRepository.save(dish)));
+        }
+        return created;
+    }
+
+    public List<DishResponseDto> findByCriteria(String name, Double priceOver, Double priceUnder) {
+        return dishRepository.findByCriteria(name, priceOver, priceUnder)
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 }

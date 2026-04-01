@@ -140,4 +140,49 @@ public class DishRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean existsByName(String name) {
+        String sql = "SELECT COUNT(*) FROM dish WHERE LOWER(name) = LOWER(?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    public List<Dish> findByCriteria(String name, Double priceOver, Double priceUnder) {
+        List<Dish> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM dish WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (name != null) {
+            sql.append(" AND LOWER(name) LIKE LOWER(?)");
+            params.add("%" + name + "%");
+        }
+        if (priceOver != null) {
+            sql.append(" AND selling_price > ?");
+            params.add(priceOver);
+        }
+        if (priceUnder != null) {
+            sql.append(" AND selling_price < ?");
+            params.add(priceUnder);
+        }
+        sql.append(" ORDER BY id");
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapRow(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 }

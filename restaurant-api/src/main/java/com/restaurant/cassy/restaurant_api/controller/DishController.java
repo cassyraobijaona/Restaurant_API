@@ -1,5 +1,6 @@
 package com.restaurant.cassy.restaurant_api.controller;
 
+import com.restaurant.cassy.restaurant_api.dto.CreateDishRequestDto;
 import com.restaurant.cassy.restaurant_api.dto.DishResponseDto;
 import com.restaurant.cassy.restaurant_api.entity.Dish;
 import com.restaurant.cassy.restaurant_api.entity.Ingredient;
@@ -21,10 +22,17 @@ public class DishController {
 
     @GetMapping
     public ResponseEntity<List<DishResponseDto>> getAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double priceOver,
+            @RequestParam(required = false) Double priceUnder,
             @RequestParam(required = false) String ingredientName) {
 
         if (ingredientName != null) {
             return ResponseEntity.ok(dishService.findByIngredientName(ingredientName));
+        }
+
+        if (name != null || priceOver != null || priceUnder != null) {
+            return ResponseEntity.ok(dishService.findByCriteria(name, priceOver, priceUnder));
         }
 
         return ResponseEntity.ok(dishService.findAll());
@@ -91,28 +99,24 @@ public class DishController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveDish(
-            @RequestBody(required = false) Dish dish) {
+    public ResponseEntity<?> createDishes(
+            @RequestBody(required = false) List<CreateDishRequestDto> dishes) {
 
-        if (dish == null) {
+        if (dishes == null || dishes.isEmpty()) {
             return ResponseEntity.status(400)
-                    .body("Request body is required.");
-        }
-
-        if (dish.getName() == null || dish.getDishType() == null) {
-            return ResponseEntity.status(400)
-                    .body("Fields 'name' and 'dishType' are required.");
+                    .body("Request body is required and must contain a list of dishes.");
         }
 
         try {
-            DishResponseDto saved = dishService.saveDish(dish);
-            return ResponseEntity.status(201).body(saved);
+            List<DishResponseDto> created = dishService.createDishes(dishes);
+            return ResponseEntity.status(201).body(created);
         } catch (RuntimeException e) {
-            if ("NOT_FOUND".equals(e.getMessage())) {
-                return ResponseEntity.status(404)
-                        .body("Dish.id=" + dish.getId() + " is not found");
+            if (e.getMessage() != null && e.getMessage().startsWith("DISH_EXISTS:")) {
+                String dishName = e.getMessage().replace("DISH_EXISTS:", "");
+                return ResponseEntity.status(400)
+                        .body("Dish.name=" + dishName + " already exists");
             }
-            throw e;
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }
