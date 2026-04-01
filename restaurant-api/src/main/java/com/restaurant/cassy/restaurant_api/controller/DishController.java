@@ -1,12 +1,12 @@
 package com.restaurant.cassy.restaurant_api.controller;
 
-import com.restaurant.cassy.restaurant_api.dto.DishCreateDto;
 import com.restaurant.cassy.restaurant_api.dto.DishResponseDto;
+import com.restaurant.cassy.restaurant_api.entity.Dish;
+import com.restaurant.cassy.restaurant_api.entity.Ingredient;
 import com.restaurant.cassy.restaurant_api.service.DishService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -20,35 +20,99 @@ public class DishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DishResponseDto>> getAll(@RequestParam(required = false) Double priceOver,
-                                                        @RequestParam(required = false) Double priceUnder,
-                                                        @RequestParam(required = false) String name) throws SQLException {
-        if (priceOver != null || priceUnder != null || name != null) {
-            return ResponseEntity.ok(dishService.getDishesFiltered(priceOver, priceUnder, name));
+    public ResponseEntity<List<DishResponseDto>> getAll(
+            @RequestParam(required = false) String ingredientName) {
+
+        if (ingredientName != null) {
+            return ResponseEntity.ok(dishService.findByIngredientName(ingredientName));
         }
+
         return ResponseEntity.ok(dishService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        return dishService.findById(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found"));
+    }
+
     @PutMapping("/{id}/ingredients")
-    public ResponseEntity<?> updateIngredients(@PathVariable Integer id,
-                                               @RequestBody List<com.restaurant.cassy.restaurant_api.entity.Ingredient> ingredients) throws SQLException {
-        if (ingredients == null) return ResponseEntity.badRequest().body("Request body is required");
+    public ResponseEntity<?> updateIngredients(
+            @PathVariable Integer id,
+            @RequestBody(required = false) List<Ingredient> ingredients) {
+
+        if (ingredients == null) {
+            return ResponseEntity.status(400)
+                    .body("Request body is required and must contain a list of ingredients.");
+        }
+
         try {
-            return ResponseEntity.ok(dishService.updateIngredients(id, ingredients));
+            DishResponseDto updated = dishService.updateIngredients(id, ingredients);
+            return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Dish.id=" + id + " is not found");
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found");
+            }
+            throw e;
+        }
+    }
+
+    @GetMapping("/{id}/cost")
+    public ResponseEntity<?> getDishCost(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(dishService.getDishCost(id));
+        } catch (RuntimeException e) {
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found");
+            }
+            throw e;
+        }
+    }
+
+    @GetMapping("/{id}/margin")
+    public ResponseEntity<?> getGrossMargin(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(dishService.getGrossMargin(id));
+        } catch (RuntimeException e) {
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Dish.id=" + id + " is not found");
+            }
+            if ("SELLING_PRICE_NULL".equals(e.getMessage())) {
+                return ResponseEntity.status(400)
+                        .body("Cannot compute gross margin: selling price is null for this dish.");
+            }
+            throw e;
         }
     }
 
     @PostMapping
-    public ResponseEntity<?> createDishes(@RequestBody List<DishCreateDto> dishDtos) {
+    public ResponseEntity<?> saveDish(
+            @RequestBody(required = false) Dish dish) {
+
+        if (dish == null) {
+            return ResponseEntity.status(400)
+                    .body("Request body is required.");
+        }
+
+        if (dish.getName() == null || dish.getDishType() == null) {
+            return ResponseEntity.status(400)
+                    .body("Fields 'name' and 'dishType' are required.");
+        }
+
         try {
-            List<DishResponseDto> result = dishService.createDishes(dishDtos);
-            return ResponseEntity.status(201).body(result);
+            DishResponseDto saved = dishService.saveDish(dish);
+            return ResponseEntity.status(201).body(saved);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            if ("NOT_FOUND".equals(e.getMessage())) {
+                return ResponseEntity.status(404)
+                        .body("Dish.id=" + dish.getId() + " is not found");
+            }
+            throw e;
         }
     }
 }

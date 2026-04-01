@@ -11,51 +11,34 @@ public class StockMovement {
     private MovementTypeEnum movementType;
     private LocalDateTime movementDate;
 
-    public Integer getId() {
-        return id;
-    }
+    public StockMovement() {}
 
-    public void setId(Integer id) {
+    public StockMovement(Integer id, Integer ingredientId, Double quantity,
+                         String unit, MovementTypeEnum movementType,
+                         LocalDateTime movementDate) {
         this.id = id;
-    }
-
-    public Integer getIngredientId() {
-        return ingredientId;
-    }
-
-    public void setIngredientId(Integer ingredientId) {
         this.ingredientId = ingredientId;
-    }
-
-    public Double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Double quantity) {
         this.quantity = quantity;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
         this.unit = unit;
-    }
-
-    public MovementTypeEnum getMovementType() {
-        return movementType;
-    }
-
-    public void setMovementType(MovementTypeEnum movementType) {
         this.movementType = movementType;
-    }
-
-    public LocalDateTime getMovementDate() {
-        return movementDate;
-    }
-
-    public void setMovementDate(LocalDateTime movementDate) {
         this.movementDate = movementDate;
     }
+
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+
+    public Integer getIngredientId() { return ingredientId; }
+    public void setIngredientId(Integer ingredientId) { this.ingredientId = ingredientId; }
+
+    public Double getQuantity() { return quantity; }
+    public void setQuantity(Double quantity) { this.quantity = quantity; }
+
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
+
+    public MovementTypeEnum getMovementType() { return movementType; }
+    public void setMovementType(MovementTypeEnum movementType) { this.movementType = movementType; }
+
+    public LocalDateTime getMovementDate() { return movementDate; }
+    public void setMovementDate(LocalDateTime movementDate) { this.movementDate = movementDate; }
 }
