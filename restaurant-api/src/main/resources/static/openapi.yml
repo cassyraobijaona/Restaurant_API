@@ -1,0 +1,287 @@
+openapi: 3.0.3
+
+info:
+  title: Restaurant API
+  description: API de gestion des ingrédients et plats - TD5 PROG3
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Serveur local
+
+paths:
+
+  /ingredients:
+    get:
+      summary: Retourne la liste de tous les ingrédients
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtre par nom d'ingrédient
+        - name: dishName
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtre par nom de plat
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Numéro de page
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Taille de la page
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [VEGETABLE, ANIMAL, MARINE, DAIRY, OTHER]
+          description: Filtre par catégorie
+      responses:
+        '200':
+          description: Liste des ingrédients retournée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IngredientResponse'
+
+  /ingredients/{id}:
+    get:
+      summary: Retourne un ingrédient par son identifiant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Identifiant de l'ingrédient
+      responses:
+        '200':
+          description: Ingrédient trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngredientResponse'
+        '404':
+          description: Ingrédient non trouvé
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ingredient.id=1 is not found"
+
+  /ingredients/{id}/stock:
+    get:
+      summary: Retourne la valeur du stock d'un ingrédient à un instant donné
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Identifiant de l'ingrédient
+        - name: at
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: "2026-01-29T00:00:00"
+          description: Instant temporel pour le calcul du stock
+        - name: unit
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [PCS, KG, L]
+          description: Unité du stock
+      responses:
+        '200':
+          description: Valeur du stock retournée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockResponse'
+        '400':
+          description: Paramètre at ou unit manquant
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Either mandatory query parameter `at` or `unit` is not provided."
+        '404':
+          description: Ingrédient non trouvé
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ingredient.id=1 is not found"
+
+  /dishes:
+    get:
+      summary: Retourne la liste de tous les plats
+      parameters:
+        - name: ingredientName
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtre par nom d'ingrédient
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtre par nom de plat
+        - name: priceOver
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Filtre les plats avec un prix supérieur à cette valeur
+        - name: priceUnder
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Filtre les plats avec un prix inférieur à cette valeur
+      responses:
+        '200':
+          description: Liste des plats retournée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DishResponse'
+
+  /dishes/{id}/ingredients:
+    put:
+      summary: Modifier les ingrédients associés à un plat
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Identifiant du plat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/IngredientIdRequest'
+      responses:
+        '200':
+          description: Ingrédients mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DishResponse'
+        '400':
+          description: Corps de la requête manquant
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Request body is required and must contain a list of ingredients."
+        '404':
+          description: Plat non trouvé
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Dish.id=1 is not found"
+
+components:
+  schemas:
+
+    IngredientResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Laitue"
+        category:
+          type: string
+          enum: [VEGETABLE, ANIMAL, MARINE, DAIRY, OTHER]
+          example: "VEGETABLE"
+        price:
+          type: number
+          format: double
+          example: 800.0
+
+    StockResponse:
+      type: object
+      properties:
+        unit:
+          type: string
+          enum: [PCS, KG, L]
+          example: "KG"
+        value:
+          type: number
+          format: double
+          example: 10.0
+
+    DishResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Salade fraîche"
+        sellingPrice:
+          type: number
+          format: double
+          nullable: true
+          example: 3500.0
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientResponse'
+
+    CreateDishRequest:
+      type: object
+      required:
+        - name
+        - dishType
+      properties:
+        name:
+          type: string
+          example: "Tiramisu"
+        dishType:
+          type: string
+          enum: [START, MAIN, DESSERT]
+          example: "DESSERT"
+        sellingPrice:
+          type: number
+          format: double
+          nullable: true
+          example: 6000.0
+
+    IngredientIdRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
